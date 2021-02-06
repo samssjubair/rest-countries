@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esho desh chini</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+</head>
+<body>
+    <header>
+        <h1>let's know some countries</h1>
+    </header>
+    <main id="main-section">
+
+    </main>
+
+    <section id="country-detail">
+        <img id="flag" src="" alt="">
+        <h1 id="cn-name"> </h1>
+        <h2 id="cn-capital"></h2>
+        <h4 id="region"></h4>
+        <h4 id="currency"></h4>
+        <h4 id="language"></h4>
+        <h4 id="population"></h4>
+
+    </section>
+
+    <script>
+        function loadData(){
+            fetch('https://restcountries.eu/rest/v2/all')
+            .then(res=>res.json())
+            .then(data=>{
+                data.forEach(e => {
+                    const main=document.getElementById('main-section');
+                    const div= document.createElement('div');
+                    // const h1=document.createElement('h1');
+                    // const h3=document.createElement('h3');
+                    // h1.innerText=e.name;
+                    // h3.innerText=e.capital;
+                    // div.appendChild(h1);
+                    // div.appendChild(h3);
+                    const content=`
+                        <h1> ${e.name}</h1> 
+                        <h3> ${e.capital}</h3> 
+                    `;
+                    div.innerHTML=content;
+                    main.appendChild(div);
+
+                });
+            });
+        }
+        loadData();
+        const divArrays=document.getElementsByTagName('div');
+        document.getElementById('main-section').addEventListener("click",function(event){
+            const clickedCountry= event.target.querySelector('h1').innerText;
+            showCountryInfo(clickedCountry);
+            
+        });
+
+        function showCountryInfo(country){
+            document.getElementById('main-section').style.display='none';
+            document.getElementById('country-detail').style.display='block';
+
+            fetch('https://restcountries.eu/rest/v2/name/'+country+'?fullText=true')
+            .then(res=>res.json())
+            .then(data=>{
+                document.getElementById('flag').setAttribute('src',data[0].flag);
+                document.getElementById('cn-name').innerText="Country Name: "+data[0].name;
+                document.getElementById('cn-capital').innerText="Capital: "+data[0].capital;
+                document.getElementById('region').innerText="Continent: "+data[0].region;
+                document.getElementById('currency').innerText="Currency: "+data[0].currencies[0].name;
+                document.getElementById('population').innerText="Population: "+data[0].population;
+                document.getElementById('language').innerText="Language: "+data[0].languages[0].name;
+            })
+        }
+    </script>
+</body>
+</html>
